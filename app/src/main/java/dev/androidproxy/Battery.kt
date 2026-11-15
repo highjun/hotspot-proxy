@@ -1,6 +1,5 @@
 package dev.androidproxy
 
-import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -12,11 +11,9 @@ object Battery {
     fun isIgnoringOptimizations(context: Context): Boolean =
         context.getSystemService(PowerManager::class.java).isIgnoringBatteryOptimizations(context.packageName)
 
-    /** 배터리 최적화 예외를 요청하는 시스템 창을 연다. */
-    @SuppressLint("BatteryLife")
-    fun requestIgnoreOptimizations(context: Context) {
-        val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, Uri.parse("package:${context.packageName}"))
-        if (!tryStart(context, intent)) tryStart(context, Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS))
+    /** 배터리 최적화 앱 목록을 연다. 별도 권한 없이 열 수 있다. 열지 못하면 앱 정보 화면을 연다. */
+    fun openOptimizationSettings(context: Context) {
+        if (!tryStart(context, Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS))) openAppSettings(context)
     }
 
     /** 앱 정보 화면을 연다. Samsung 은 여기의 "배터리" 에서 제한 없음을 고른다. */

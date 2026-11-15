@@ -1,4 +1,4 @@
-# Android Proxy 앱
+# 핫스팟 프록시 앱
 
 폰의 Wi-Fi 핫스팟에 붙은 기기(예: 노트북)가 폰의 모바일 데이터를 쓰게 하는 proxy 앱이다. 폰에서 HTTP proxy(CONNECT 포함)와 SOCKS5 proxy 를 포트 하나(기본 8080)로 돌린다. 정한 것은 item [핫스팟 기기용 proxy 앱 만들기](<../../backlog/핫스팟 기기용 proxy 앱 만들기.md>)에 있다.
 
@@ -11,6 +11,8 @@
 - `ProxyService.kt`: foreground service(`specialUse`). 도는 동안 partial wake lock 과 Wi-Fi lock 을 쥔다.
 - `BootReceiver.kt`: 부팅 때 자동 시작 설정이 켜져 있고 proxy 가 켜져 있었으면 다시 켠다.
 - `ui/`: 화면(`MainScreen.kt`)과 설정 화면(`SettingsScreen.kt`). 설정은 SharedPreferences 에 둔다.
+- 앱 아이콘: adaptive icon(`res/mipmap-anydpi-v26/ic_launcher.xml`). 그림은 `res/drawable/ic_launcher_foreground.xml` 이고, 원본은 `store/icon.svg` 다.
+- `store/`: Play 스토어 그림(앱 아이콘 `icon-512.png`, 그래픽 이미지 `feature-1024x500.png`)과 그 SVG 원본. `topics/app/` 에서 `uv run store/render.py` 로 다시 만든다.
 
 ## 빌드와 테스트
 

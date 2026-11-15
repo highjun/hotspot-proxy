@@ -31,11 +31,6 @@ class AppSettings(context: Context) {
             prefs.edit().putBoolean(KEY_WANTED, value).commit()
         }
 
-    /** 배터리 최적화 예외를 한 번 요청했는지. */
-    var batteryAsked: Boolean
-        get() = prefs.getBoolean(KEY_BATTERY_ASKED, false)
-        set(value) = prefs.edit().putBoolean(KEY_BATTERY_ASKED, value).apply()
-
     fun proxyConfig() = ProxyConfig(port = port, httpEnabled = httpEnabled, socksEnabled = socksEnabled)
 
     companion object {
@@ -44,7 +39,6 @@ class AppSettings(context: Context) {
         private const val KEY_SOCKS = "socks_enabled"
         private const val KEY_BOOT = "start_on_boot"
         private const val KEY_WANTED = "proxy_wanted"
-        private const val KEY_BATTERY_ASKED = "battery_asked"
 
         const val MIN_PORT = 1024
         const val MAX_PORT = 65535

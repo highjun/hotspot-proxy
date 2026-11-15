@@ -56,7 +56,7 @@ fun SettingsScreen(onBack: () -> Unit) {
     var boot by remember { mutableStateOf(settings.startOnBoot) }
     var batteryExempt by remember { mutableStateOf(Battery.isIgnoringOptimizations(context)) }
 
-    // 시스템 창에서 돌아오면 배터리 예외 상태를 다시 읽는다.
+    // 설정 화면에서 돌아오면 배터리 예외 상태를 다시 읽는다.
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(lifecycleOwner) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
@@ -142,17 +142,16 @@ fun SettingsScreen(onBack: () -> Unit) {
                 style = MaterialTheme.typography.bodyLarge,
             )
             OutlinedButton(
-                onClick = { Battery.requestIgnoreOptimizations(context) },
-                enabled = !batteryExempt,
+                onClick = { Battery.openOptimizationSettings(context) },
                 modifier = Modifier.fillMaxWidth(),
-            ) { Text("배터리 최적화 예외 요청") }
+            ) { Text("배터리 최적화 설정 열기") }
             OutlinedButton(
                 onClick = { Battery.openAppSettings(context) },
                 modifier = Modifier.fillMaxWidth(),
             ) { Text("앱 배터리 설정 열기") }
             Text(
-                "Samsung 기기는 설정 > 배터리 > 백그라운드 사용 제한 > \"절전 예외 앱\" 에 Android Proxy 를 더하세요. " +
-                    "앱 정보 > 배터리에서 \"제한 없음\" 을 고르면 화면이 꺼져도 proxy 가 멈추지 않습니다.",
+                "화면이 꺼져도 proxy 가 멈추지 않게 하려면 앱 정보 > 배터리에서 \"제한 없음\" 을 고르세요. " +
+                    "Samsung 기기는 설정 > 배터리 > 백그라운드 사용 제한 > \"절전 예외 앱\" 에 핫스팟 프록시를 더하세요.",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )

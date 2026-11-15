@@ -32,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -42,7 +43,6 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import dev.androidproxy.AppSettings
-import dev.androidproxy.Battery
 import dev.androidproxy.Hotspot
 import dev.androidproxy.HotspotInfo
 import dev.androidproxy.ProxyService
@@ -76,7 +76,7 @@ fun MainScreen(onOpenSettings: () -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Android Proxy", fontWeight = FontWeight.SemiBold) },
+                title = { Text(stringResource(R.string.app_name), fontWeight = FontWeight.SemiBold) },
                 actions = {
                     IconButton(onClick = onOpenSettings) {
                         Icon(painterResource(R.drawable.ic_settings), contentDescription = "설정")
@@ -100,10 +100,6 @@ fun MainScreen(onOpenSettings: () -> Unit) {
                         ProxyService.stop(context)
                     } else {
                         ProxyService.start(context)
-                        if (!settings.batteryAsked && !Battery.isIgnoringOptimizations(context)) {
-                            settings.batteryAsked = true
-                            Battery.requestIgnoreOptimizations(context)
-                        }
                     }
                 },
             )

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 108 108">
+  <!-- 앱 아이콘 원본. 그림 칸(108×108)과 path 는 app/src/main/res/drawable/ic_launcher_foreground.xml 과 같다. -->
+  <rect width="108" height="108" fill="#1E5AA8"/>
+  <path id="glyph" d="M38.68,41.14A20,20 0,0 0,38.68 66.86M69.32,41.14A20,20 0,0 1,69.32 66.86M31.02,34.72A30,30 0,0 0,31.02 73.28M76.98,34.72A30,30 0,0 1,76.98 73.28M47,65L47,43M43,47L47,43L51,47M61,43L61,65M57,61L61,65L65,61"
+        fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

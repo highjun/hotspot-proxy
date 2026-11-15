@@ -1,15 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 핫스팟 전파(좌우 호 두 겹)와 그 가운데의 오가는 화살표(TX/RX 중계). 그림 원본은 store/icon.svg 다. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <group
-        android:scaleX="2.5"
-        android:scaleY="2.5"
-        android:translateX="24"
-        android:translateY="24">
-        <path
-            android:fillColor="#FFFFFFFF"
-            android:pathData="M16,17.01V10h-2v7.01h-3L15,21l4,-3.99h-3zM9,3L5,6.99h3V14h2V6.99h3L9,3z" />
-    </group>
+    <path
+        android:pathData="M38.68,41.14A20,20 0,0 0,38.68 66.86M69.32,41.14A20,20 0,0 1,69.32 66.86M31.02,34.72A30,30 0,0 0,31.02 73.28M76.98,34.72A30,30 0,0 1,76.98 73.28M47,65L47,43M43,47L47,43L51,47M61,43L61,65M57,61L61,65L65,61"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
 </vector>
