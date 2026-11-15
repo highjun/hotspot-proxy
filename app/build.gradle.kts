@@ -9,7 +9,7 @@ android {
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "dev.androidproxy"
+        applicationId = "dev.sangjun.androidproxy"
         minSdk = 33
         targetSdk = 36
         versionCode = 1

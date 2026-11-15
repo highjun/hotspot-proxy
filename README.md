@@ -42,7 +42,7 @@ USB 로 붙인 폰의 proxy 를 PC 에서 `adb forward` 로 부른다. forward �
    ```
 
 3. 화면의 TX/RX 가 늘었는지 본다.
-4. service 가 도는지 본다: `~/Android/Sdk/platform-tools/adb shell "dumpsys activity services dev.androidproxy"`
+4. service 가 도는지 본다: `~/Android/Sdk/platform-tools/adb shell "dumpsys activity services dev.sangjun.androidproxy"`
 5. 끝나면 `~/Android/Sdk/platform-tools/adb forward --remove tcp:18080` 로 forward 를 지운다.
 
 ## 노트북에서 쓰기
