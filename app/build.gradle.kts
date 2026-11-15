@@ -1,7 +1,12 @@
+import java.awt.Color
+import java.awt.image.BufferedImage
+import javax.imageio.ImageIO
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
+    id("app.cash.paparazzi")
 }
 
 android {
@@ -52,4 +57,30 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.9.4")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
     testImplementation("junit:junit:4.13.2")
+}
+
+// Play 스토어 휴대전화 스크린샷: StoreScreenshotTest 를 기록하고 store/screenshot-<번호>.png 로 옮긴다.
+// Play 는 알파 없는 PNG 를 받으므로 RGB 로 바꿔 쓴다.
+tasks.register("storeScreenshots") {
+    dependsOn("recordPaparazziDebug")
+    val images = layout.projectDirectory.dir("src/test/snapshots/images")
+    val store = rootProject.layout.projectDirectory.dir("store")
+    doLast {
+        val name = Regex("""dev\.androidproxy\.ui_StoreScreenshotTest_screenshot(\d+).*\.png""")
+        images.asFile.listFiles().orEmpty().sortedBy { it.name }.forEach { file ->
+            val number = name.matchEntire(file.name)?.groupValues?.get(1) ?: return@forEach
+            val source = ImageIO.read(file)
+            check(source.width == 1080 && source.height == 1920) { "${file.name}: ${source.width}x${source.height}" }
+            val rgb = BufferedImage(source.width, source.height, BufferedImage.TYPE_INT_RGB)
+            rgb.createGraphics().apply {
+                color = Color.WHITE
+                fillRect(0, 0, source.width, source.height)
+                drawImage(source, 0, 0, null)
+                dispose()
+            }
+            val out = store.file("screenshot-$number.png").asFile
+            ImageIO.write(rgb, "png", out)
+            println("${out.name}: ${rgb.width}x${rgb.height} RGB")
+        }
+    }
 }

@@ -13,6 +13,7 @@
 - `ui/`: 화면(`MainScreen.kt`)과 설정 화면(`SettingsScreen.kt`). 설정은 SharedPreferences 에 둔다.
 - 앱 아이콘: adaptive icon(`res/mipmap-anydpi-v26/ic_launcher.xml`). 그림은 `res/drawable/ic_launcher_foreground.xml` 이고, 원본은 `store/icon.svg` 다.
 - `store/`: Play 스토어 그림(앱 아이콘 `icon-512.png`, 그래픽 이미지 `feature-1024x500.png`)과 그 SVG 원본. `topics/app/` 에서 `uv run store/render.py` 로 다시 만든다.
+  - 휴대전화 스크린샷 `screenshot-1.png`(켜짐), `screenshot-2.png`(꺼짐), `screenshot-3.png`(설정)는 1080×1920 RGB PNG 다. 기기 없이 JVM 에서 Paparazzi 로 그린다(아래 "스토어 스크린샷").
 
 ## 빌드와 테스트
 
@@ -22,6 +23,19 @@
 ./gradlew testDebugUnitTest   # proxy 단위 테스트
 ./gradlew assembleDebug       # app/build/outputs/apk/debug/app-debug.apk
 ```
+
+`testDebugUnitTest` 는 스토어 스크린샷 테스트(`app/src/test/java/dev/androidproxy/ui/StoreScreenshotTest.kt`)도 그린다. 그림을 비교하거나 쓰지는 않는다.
+
+## 스토어 스크린샷
+
+화면은 상태를 받아 그리기만 하는 `MainContent`·`SettingsContent` 로 그린다. 테스트가 가짜 상태를 넣고, 한국어·밝은 테마·Pixel 6 너비(420dpi)에 높이 1920 px 로 그린다.
+
+```sh
+./gradlew storeScreenshots   # store/screenshot-1.png … screenshot-3.png
+```
+
+- 기록한 원본은 `app/src/test/snapshots/images/` 에 생기고, git 이 받지 않는다. 이 task 가 RGB(알파 없음)로 바꿔 `store/` 에 쓴다.
+- Paparazzi 는 `2.0.0-alpha02` 를 쓴다. `alpha04` 는 AGP 를 8.13.2 로 끌어올리고, Gradle 8.14 에서 테스트 보고서 단계가 실패한다.
 
 ## 설치
 

@@ -46,6 +46,7 @@ import dev.androidproxy.AppSettings
 import dev.androidproxy.Hotspot
 import dev.androidproxy.HotspotInfo
 import dev.androidproxy.ProxyService
+import dev.androidproxy.ProxyState
 import dev.androidproxy.ProxyStatus
 import dev.androidproxy.R
 import dev.androidproxy.formatBytes
@@ -54,7 +55,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(onOpenSettings: () -> Unit) {
     val context = LocalContext.current
@@ -73,6 +73,37 @@ fun MainScreen(onOpenSettings: () -> Unit) {
         }
     }
 
+    MainContent(
+        state = state,
+        hotspot = hotspot,
+        port = if (state.running) state.port else settings.port,
+        http = if (state.running) state.httpEnabled else settings.httpEnabled,
+        socks = if (state.running) state.socksEnabled else settings.socksEnabled,
+        onToggle = {
+            if (state.running) {
+                ProxyService.stop(context)
+            } else {
+                ProxyService.start(context)
+            }
+        },
+        onOpenSettings = onOpenSettings,
+        onOpenHotspotSettings = { Hotspot.openSettings(context) },
+    )
+}
+
+/** 상태를 받아 그리기만 하는 메인 화면. 스크린샷 테스트도 이것을 그린다. */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MainContent(
+    state: ProxyState,
+    hotspot: HotspotInfo,
+    port: Int,
+    http: Boolean,
+    socks: Boolean,
+    onToggle: () -> Unit,
+    onOpenSettings: () -> Unit,
+    onOpenHotspotSettings: () -> Unit,
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -95,13 +126,7 @@ fun MainScreen(onOpenSettings: () -> Unit) {
             Spacer(Modifier.weight(1f))
             PowerButton(
                 on = state.running,
-                onClick = {
-                    if (state.running) {
-                        ProxyService.stop(context)
-                    } else {
-                        ProxyService.start(context)
-                    }
-                },
+                onClick = onToggle,
             )
             Spacer(Modifier.height(12.dp))
             Text(
@@ -115,10 +140,10 @@ fun MainScreen(onOpenSettings: () -> Unit) {
             Spacer(Modifier.height(24.dp))
             HotspotCard(
                 hotspot = hotspot,
-                port = if (state.running) state.port else settings.port,
-                http = if (state.running) state.httpEnabled else settings.httpEnabled,
-                socks = if (state.running) state.socksEnabled else settings.socksEnabled,
-                onOpenHotspotSettings = { Hotspot.openSettings(context) },
+                port = port,
+                http = http,
+                socks = socks,
+                onOpenHotspotSettings = onOpenHotspotSettings,
             )
             Spacer(Modifier.weight(1f))
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {

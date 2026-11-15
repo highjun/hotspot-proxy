@@ -45,7 +45,6 @@ import dev.androidproxy.ProxyService
 import dev.androidproxy.ProxyStatus
 import dev.androidproxy.R
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(onBack: () -> Unit) {
     val context = LocalContext.current
@@ -64,13 +63,64 @@ fun SettingsScreen(onBack: () -> Unit) {
         }
     }
 
-    val portValue = portText.toIntOrNull()
-    val portValid = portValue != null && portValue in AppSettings.MIN_PORT..AppSettings.MAX_PORT
-
     /** 켜져 있으면 바뀐 설정으로 다시 켠다. */
     fun applyIfRunning() {
         if (ProxyStatus.state.value.running) ProxyService.restart(context)
     }
+
+    SettingsContent(
+        portText = portText,
+        savedPort = settings.port,
+        http = http,
+        socks = socks,
+        boot = boot,
+        batteryExempt = batteryExempt,
+        onPortTextChange = { portText = it },
+        onApplyPort = {
+            settings.port = it
+            applyIfRunning()
+        },
+        onHttpChange = {
+            http = it
+            settings.httpEnabled = it
+            applyIfRunning()
+        },
+        onSocksChange = {
+            socks = it
+            settings.socksEnabled = it
+            applyIfRunning()
+        },
+        onBootChange = {
+            boot = it
+            settings.startOnBoot = it
+        },
+        onOpenOptimizationSettings = { Battery.openOptimizationSettings(context) },
+        onOpenAppSettings = { Battery.openAppSettings(context) },
+        onBack = onBack,
+    )
+}
+
+/** 설정 값을 받아 그리기만 하는 설정 화면. 스크린샷 테스트도 이것을 그린다. */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SettingsContent(
+    portText: String,
+    savedPort: Int,
+    http: Boolean,
+    socks: Boolean,
+    boot: Boolean,
+    batteryExempt: Boolean,
+    onPortTextChange: (String) -> Unit,
+    onApplyPort: (Int) -> Unit,
+    onHttpChange: (Boolean) -> Unit,
+    onSocksChange: (Boolean) -> Unit,
+    onBootChange: (Boolean) -> Unit,
+    onOpenOptimizationSettings: () -> Unit,
+    onOpenAppSettings: () -> Unit,
+    onBack: () -> Unit,
+) {
+    val portValue = portText.toIntOrNull()
+    val portValid = portValue != null && portValue in AppSettings.MIN_PORT..AppSettings.MAX_PORT
 
     Scaffold(
         topBar = {
@@ -96,7 +146,7 @@ fun SettingsScreen(onBack: () -> Unit) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 OutlinedTextField(
                     value = portText,
-                    onValueChange = { text -> portText = text.filter { it.isDigit() }.take(5) },
+                    onValueChange = { text -> onPortTextChange(text.filter { it.isDigit() }.take(5)) },
                     label = { Text("포트") },
                     singleLine = true,
                     isError = !portValid,
@@ -105,23 +155,12 @@ fun SettingsScreen(onBack: () -> Unit) {
                     modifier = Modifier.weight(1f),
                 )
                 FilledTonalButton(
-                    enabled = portValid && portValue != settings.port,
-                    onClick = {
-                        settings.port = portValue!!
-                        applyIfRunning()
-                    },
+                    enabled = portValid && portValue != savedPort,
+                    onClick = { onApplyPort(portValue!!) },
                 ) { Text("적용") }
             }
-            SwitchRow("HTTP proxy", "HTTP 요청과 CONNECT(HTTPS)를 받습니다", http) {
-                http = it
-                settings.httpEnabled = it
-                applyIfRunning()
-            }
-            SwitchRow("SOCKS5 proxy", "인증 없는 SOCKS5 CONNECT 를 받습니다", socks) {
-                socks = it
-                settings.socksEnabled = it
-                applyIfRunning()
-            }
+            SwitchRow("HTTP proxy", "HTTP 요청과 CONNECT(HTTPS)를 받습니다", http, onHttpChange)
+            SwitchRow("SOCKS5 proxy", "인증 없는 SOCKS5 CONNECT 를 받습니다", socks, onSocksChange)
             Text(
                 "켜져 있을 때 바꾸면 proxy 를 다시 켭니다. TX/RX 는 0 부터 다시 셉니다.",
                 style = MaterialTheme.typography.bodySmall,
@@ -130,10 +169,7 @@ fun SettingsScreen(onBack: () -> Unit) {
 
             HorizontalDivider()
             SectionTitle("자동 시작")
-            SwitchRow("부팅할 때 자동 시작", "꺼지기 전에 proxy 가 켜져 있었으면 다시 켭니다", boot) {
-                boot = it
-                settings.startOnBoot = it
-            }
+            SwitchRow("부팅할 때 자동 시작", "꺼지기 전에 proxy 가 켜져 있었으면 다시 켭니다", boot, onBootChange)
 
             HorizontalDivider()
             SectionTitle("배터리")
@@ -142,11 +178,11 @@ fun SettingsScreen(onBack: () -> Unit) {
                 style = MaterialTheme.typography.bodyLarge,
             )
             OutlinedButton(
-                onClick = { Battery.openOptimizationSettings(context) },
+                onClick = onOpenOptimizationSettings,
                 modifier = Modifier.fillMaxWidth(),
             ) { Text("배터리 최적화 설정 열기") }
             OutlinedButton(
-                onClick = { Battery.openAppSettings(context) },
+                onClick = onOpenAppSettings,
                 modifier = Modifier.fillMaxWidth(),
             ) { Text("앱 배터리 설정 열기") }
             Text(
